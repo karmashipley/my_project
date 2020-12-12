@@ -16,14 +16,14 @@ def home():
 ## 광역시도 리스트 가져오기
 @app.route('/do', methods=['GET'])
 def list_do():
-    addresses = list(db.addresses.find({"$or":[{'$where': "this.code.length <= 2"}, {'code':'3611'}]}, {'_id': False}))
+    addresses = list(db.addresses.find({"$or": [{'$where': "this.code.length <= 2"}, {'code': '3611'}]}, {'_id': False}))
     # print(addresses)
     return jsonify({'result': 'success', 'addresses': addresses})
 
 ## 시군구 리스트 가져오기
 @app.route('/gugun', methods=['GET'])
 def list_gugun():
-    addresses = list(db.addresses.find({"$or": [{'$where': "this.code.length <= 5"}, {'code': '3611'}]}, {'_id': False}))
+    addresses = list(db.addresses.find({"$or": [{'$where': "this.code.length <= 5"}]}, {'_id': False}))
     return jsonify({'result': 'success', 'addresses': addresses})
 #
 #
