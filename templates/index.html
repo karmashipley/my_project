@@ -1,26 +1,16 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-
+    <meta charset="UTF-8">
     <title>부동산 가격으로 아파트 찾기</title>
+
     <link rel="stylesheet" href="/css/common.css" type="text/css"/>
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
             crossorigin="anonymous"></script>
-    <!--        <script src="/js/common.js"></script>-->
-    <!--        <script src="/js/jquery-1.10.2.js"></script>-->
-    <!--        <script src="/js/jquery-ui.js"></script>-->
-    <!--        <script src="/js/util.js"></script>-->
     <script>
-        var nscp = (navigator.appName == "Netscape");
-        var vers = parseFloat(navigator.appVersion.substring(22, 25));
-        var agt = navigator.userAgent.toLowerCase();
-        var menuLayer = "";
-
         $(document).ready(function () {
             list_do()
         });
@@ -52,7 +42,7 @@
             let si_code = $("#sido-list option:selected").val();
             $.ajax({
                 type: "GET",
-                url: "/gugun?sido_give="+si_code,
+                url: "/gugun?sido_give=" + si_code,
                 data: {},
                 success: function (response) {
                     if (response['result'] == 'success') {
@@ -72,9 +62,10 @@
 
         //읍면동 목록 선택
         function list_dong() {
+            let gugun_code = $("#gugun-list option:selected").val();
             $.ajax({
                 type: "GET",
-                url: "/dong",
+                url: "/dong?gugun_give=" + gugun_code,
                 data: {},
                 success: function (response) {
                     if (response['result'] == 'success') {
@@ -92,189 +83,119 @@
             $("#dong-list").append(tempHtml);
         }
     </script>
-
-    <script src="/js/search.js"></script>
-    <script src="/js/search_ui.js"></script>
-    <script src="/js/search_list.js"></script>
-
 </head>
-
 <body>
-
-<div id="wrap">
-    <table style="width: 100%; height: 100%;">
-        <tr>
-            <td style="width: 100%; height: 104px; vertical-align: top;">
-                <!--                        <form name="frm" action="#" method="post">-->
-                <!--                            <input type="hidden" name="menuGubun" value="A"/>-->
-                <!--                            <input type="hidden" name="srhType" value="AMT"/>-->
-                <!--                            <input type="hidden" name="selDanji" value=""/>-->
-                <!--                            <input type="hidden" name="r_csrf" value=""/>-->
-
-                <div class="search_box">
-
-                    <table style="width: 100%;">
+<table style="width: 100%;">
+    <tr>
+        <td class="SB_T01"></td>
+        <td class="SB_T02"></td>
+        <td class="SB_T03"></td>
+    </tr>
+    <tr>
+        <td class="SB_L"></td>
+        <td class="SB_B">
+            <table style="width: 100%;">
+                <tr>
+                    <td class="search_tit01">기준년도</td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <label><select name="srhYear" class="select_search">
+                                        <option value="">::선택::</option>
+                                        <option value="2019">2019년도</option>
+                                        <option value="2020">2020년도</option>
+                                    </select></label>
+                                </td>
+                                <td style="padding-left: 3px;">
+                                    <label><select name="srhPeriod" class="select_search">
+                                        <option value="">::선택::</option>
+                                        <option value="1">1분기</option>
+                                        <option value="2">2분기</option>
+                                        <option value="3">3분기</option>
+                                        <option value="4">4분기</option>
+                                    </select></label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <td class="search_tit01">지역선택</td>
+                <td>
+                    <table>
                         <tr>
-                            <td class="SB_T01"></td>
-                            <td class="SB_T02"></td>
-                            <td class="SB_T03"></td>
-                        </tr>
-                        <tr>
-                            <td class="SB_L"></td>
-                            <td class="SB_B">
-                                <table style="width: 100%;">
+                            <td>
+                                <label><select name="Code"
+                                               class="select_search"
+                                               id="sido-list"
+                                               style="float:left;" onchange="list_gugun()">
+                                    <option value="">::시도선택::</option>
+                                    <!--  <option value="11">서울특별시</option>-->
+                                    <!--  <option value="26">부산광역시</option>-->
+                                    <!--  <option value="27">대구광역시</option>-->
+                                    <!--  <option value="28">인천광역시</option>-->
+                                    <!--  <option value="29">광주광역시</option>-->
+                                    <!--  <option value="30">대전광역시</option>-->
+                                    <!--  <option value="31">울산광역시</option>-->
+                                    <!--  <option value="36">세종특별자치시</option>-->
+                                    <!--  <option value="41">경기도</option>-->
+                                    <!--  <option value="42">강원도</option>-->
+                                    <!--  <option value="43">충청북도</option>-->
+                                    <!--  <option value="44">충청남도</option>-->
+                                    <!--  <option value="45">전라북도</option>-->
+                                    <!--  <option value="46">전라남도</option>-->
+                                    <!--  <option value="47">경상북도</option>-->
+                                    <!--  <option value="48">경상남도</option>-->
+                                    <!--  <option value="50">제주특별자치도</option>-->
+                                </select></label>
+                            </td>
+                            <td style="padding-left: 3px;">
+                                <label><select name="gugunCode"
+                                               class="select_search"
+                                               id="gugun-list"
+                                               style="float:left;" onchange="list_dong()">
+                                    <option value="">::구군선택::</option>
+                                    <!-- <option value="11680">강남구</option>-->
+                                </select></label>
+                            </td>
+                            <td id="divLand">
+                                <table>
                                     <tr>
-                                        <td class="search_tit01">기준년도</td>
-                                        <td>
-                                            <table>
-                                                <tr>
-                                                    <td>
-                                                        <label><select name="srhYear" class="select_search">
-                                                            <option value="">::선택::</option>
-                                                            <option value="2019">2019년도</option>
-                                                            <option value="2020">2020년도</option>
-                                                        </select></label>
-                                                    </td>
-                                                    <td style="padding-left: 3px;">
-                                                        <label><select name="srhPeriod" class="select_search">
-                                                            <option value="">::선택::</option>
-                                                            <option value="1">1분기</option>
-                                                            <option value="2">2분기</option>
-                                                            <option value="3">3분기</option>
-                                                            <option value="4">4분기</option>
-                                                        </select></label>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="search_tit01">지역선택</td>
-                                        <td>
-                                            <table>
-                                                <tr>
-                                                    <td>
-                                                        <label><select name="Code"
-                                                                       class="select_search"
-                                                                       id="sido-list"
-                                                                       style="float:left;" onchange="list_gugun()">
-                                                            <option value="">::시도선택::</option>
-                                                            <!--  <option value="11">서울특별시</option>-->
-                                                            <!--  <option value="26">부산광역시</option>-->
-                                                            <!--  <option value="27">대구광역시</option>-->
-                                                            <!--  <option value="28">인천광역시</option>-->
-                                                            <!--  <option value="29">광주광역시</option>-->
-                                                            <!--  <option value="30">대전광역시</option>-->
-                                                            <!--  <option value="31">울산광역시</option>-->
-                                                            <!--  <option value="36">세종특별자치시</option>-->
-                                                            <!--  <option value="41">경기도</option>-->
-                                                            <!--  <option value="42">강원도</option>-->
-                                                            <!--  <option value="43">충청북도</option>-->
-                                                            <!--  <option value="44">충청남도</option>-->
-                                                            <!--  <option value="45">전라북도</option>-->
-                                                            <!--  <option value="46">전라남도</option>-->
-                                                            <!--                                                                        <option value="47">경상북도</option>-->
-                                                            <!--                                                                        <option value="48">경상남도</option>-->
-                                                            <!--                                                                        <option value="50">제주특별자치도</option>-->
-                                                        </select></label>
-                                                    </td>
-                                                    <td style="padding-left: 3px;">
-                                                        <label><select name="gugunCode"
-                                                                       class="select_search"
-                                                                       id="gugun-list"
-                                                                       style="float:left;">
-                                                            <option value="">::구군선택::</option>
-                                                            <!-- <option value="11680">강남구</option>-->
-                                                        </select></label>
-                                                    </td>
-                                                    <td id="divLand">
-                                                        <table>
-                                                            <tr>
-                                                                <td style="padding-left: 3px;">
-                                                                    <label><select name="dongCode"
-                                                                                   class="select_search"
-                                                                                   id="dong-list"
-                                                                                   style="float:left;">
-                                                                        <option value="">::읍면동선택::</option>
-                                                                        <!--                                                                                    <option value="1168010300">개포동</option>-->
-                                                                    </select></label>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr id="divAmt">
-                                        <td class="search_tit01">금액선택</td>
-                                        <td>
-                                            <table id="divTradeAmt">
-                                                <tr>
-                                                    <td>
-                                                        <label><input type="text" name="fromAmt1"
-                                                                      class="input_search_R" size='10'
-                                                                      maxlength="9" value=""/> (만원)</label>
-                                                        ~
-                                                        <label><input type="text" name="toAmt1"
-                                                                      class="input_search_R" size='10'
-                                                                      maxlength="9" value=""/> (만원)</label>
-                                                        <span id="textAmt1"></span>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="padding-top:10px; text-align: center;">
-                                            <a href="#" onclick="javascript:fnSubmit(); return false;"><img
-                                                    src="/images/search_btn.gif" alt="검색"
-                                                    style="cursor:pointer;" id="searchBtn" title="검색"></a>
+                                        <td style="padding-left: 3px;">
+                                            <label><select name="dongCode"
+                                                           class="select_search"
+                                                           id="dong-list"
+                                                           style="float:left;">
+                                                <option value="">::읍면동선택::</option>
+                                                <!-- <option value="1168010300">개포동</option>-->
+                                            </select></label>
                                         </td>
                                     </tr>
                                 </table>
                             </td>
-                            <td class="SB_R"></td>
-                        </tr>
-                        <tr>
-                            <td class="SB_B01"></td>
-                            <td class="SB_B02"></td>
-                            <td class="SB_B03"></td>
                         </tr>
                     </table>
+                </td>
+                </tr>
+                <tr id="divAmt">
+                    <td class="search_tit01">금액선택</td>
+                    <td>
+                        <table id="divTradeAmt">
+                            <tr>
+                                <td>
+                                    <label><input type="text" name="fromAmt1"
+                                                  class="input_search_R" size='10'
+                                                  maxlength="9" value=""/> (만원)</label>
+                                    ~
+                                    <label><input type="text" name="toAmt1"
+                                                  class="input_search_R" size='10'
+                                                  maxlength="9" value=""/> (만원)</label>
+                                    <span id="textAmt1"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-                </div>
-
-                <div class="search_box3" id="divDanjiLayer">
-                    <table style="width: 100%;">
-                        <tr>
-                            <td class="dot_01"></td>
-                        </tr>
-                        <tr>
-                            <td height="25"></td>
-                        </tr>
-                    </table>
-                    <table style="width: 100%;">
-                        <tr>
-                            <td class="SSB_T01"></td>
-                            <td class="SSB_T02"></td>
-                            <td class="SSB_T03"></td>
-                        </tr>
-                        <tr>
-                            <td class="SSB_L"></td>
-                            <td class="SSB_B">
-                                <div id="danjiBtn"></div>
-                            </td>
-                            <td class="SSB_R"></td>
-                        </tr>
-                        <tr>
-                            <td class="SSB_B01"></td>
-                            <td class="SSB_B02"></td>
-                            <td class="SSB_B03"></td>
-                        </tr>
-                    </table>
-                </div>
-
-</div>
 </body>
 </html>

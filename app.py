@@ -24,8 +24,18 @@ def list_do():
 @app.route('/gugun', methods=['GET'])
 def list_gugun():
     sido_receive = request.args.get('sido_give')
-    # addresses = list(db.addresses.find({"$and": [{'$where': "this.code.length == 4"}, {'code':'/^'+sido_receive+'/'}]}, {'_id': False}))
-    addresses = list(db.addresses.find({"$and": [{'code':'/^11/'}]}, {'_id': False}))
+    addresses = list(db.addresses.find({"$and": [{'$where': "this.code.length == 4"}, {'code': {"$regex": '^'+sido_receive}}]}, {'_id': False}))
+    for address in addresses:
+        print(address)
+    return jsonify({'result': 'success', 'addresses': addresses})
+
+## 읍면동 리스트 가져오기
+@app.route('/dong', methods=['GET'])
+def list_dong():
+    gugun_receive = request.args.get('gugun_give')
+    addresses = list(db.addresses.find({"$and": [{'$where': "this.code.length == 8"}, {'code': {"$regex": '^'+gugun_receive}}]}, {'_id': False}))
+    for address in addresses:
+        print(address)
     return jsonify({'result': 'success', 'addresses': addresses})
 #
 #
