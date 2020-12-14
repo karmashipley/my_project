@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <title>부동산 가격으로 아파트 찾기</title>
 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <style type="text/css">
+            .search {
+                text-align: center;
+            }
+    </style>
+
     <link rel="stylesheet" href="/css/common.css" type="text/css"/>
 
     <!-- JS -->
@@ -214,11 +224,25 @@
                     </tr>
         </tr>
     </table>
-</div>
+</div><p>
 <div class="search">
     <button onclick="search()" type="button" class="btn btn-primary btn-lg btn-block">조회하기</button>
+</div></p>
+<div class="result">
+    <h3>조회결과 리스트</h3>
+    <table>
+        <thead>
+        <tr>
+            <td>거래월</td>
+            <td>법정동</td>
+            <td>아파트명</td>
+            <td>실거래가</td>
+        </tr>
+        </thead>
+        <tbody id="">
+        </tbody>
+    </table>
 </div>
-
 </body>
 
 </html>
