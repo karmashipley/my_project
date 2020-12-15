@@ -97,15 +97,40 @@
                 $("#dong-list").append(tempHtml);
             }
 
-            function makeResultRow(거래월, 법정동, 아파트명, 실거래가) {
-                let result_html = `<tr>\
+            function get_items(){
+                $.ajax({
+                    type: "GET",
+                    url: "/price",
+                    data: {},
+                    success: function (response) {
+                        let items = response['item_list']
+                        for (let i = 0, i < item_list.length; i++) {
+                            let item = item[i]
+                            let month =
+                            let dong =
+                            let name =
+                            let price =
+                            let result_html =  `<tr>\
                                <td>${거래월}</td>
                                <td>${법정동}</td>
                                <td>${아파트명}</td>
                                <td>${실거래가}</td>
                                </tr>`;
-                $('#showResult').append(result_html);
+                        $('#showResult').append(result_html);
+                        }
+                    }
+                })
             }
+
+            // function makeResultRow(거래월, 법정동, 아파트명, 실거래가) {
+            //     let result_html = `<tr>\
+            //                    <td>${거래월}</td>
+            //                    <td>${법정동}</td>
+            //                    <td>${아파트명}</td>
+            //                    <td>${실거래가}</td>
+            //                    </tr>`;
+            //     $('#showResult').append(result_html);
+            // }
         </script>
     </head>
 
