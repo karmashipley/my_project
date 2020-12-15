@@ -42,6 +42,24 @@ def list_dong():
         print(address)
     return jsonify({'result': 'success', 'addresses': addresses})
 
+## 실거래가 가져오기
+@app.route('/price', methods=['GET'])
+def get_items():
+    url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?serviceKey=97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D&pageNo=1&numOfRows=10&LAWD_CD=11110&DEAL_YMD=201512'
+    params = {'serviceKey':'CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D','pageNo':1,'numOfRows':10,'LAWD_CD':'11110','DEAL_YMD':'202010'}
+    res = requests.get(url, params=params)
+    root = ET.fromstring(res.content)
+    item_list = []
+    for child in root.find('body').find('items'):
+        elements = child.findall("*")
+        data = {}
+        for element in elements:
+            tag = element.tag.strip()
+            text = element.text.strip()
+            data[tag] = text
+        item_list.append(data)
+    return jsonify({'result': 'success', 'list': item_list})
+
 url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?serviceKey=97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D&pageNo=1&numOfRows=10&LAWD_CD=11110&DEAL_YMD=201512'
 params = {'serviceKey':'CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D','pageNo':1,'numOfRows':10,'LAWD_CD':'11110','DEAL_YMD':'202010'}
 res = requests.get(url, params=params)
@@ -53,21 +71,6 @@ for item in items:
     print(item.find('법정동읍면동코드').text)
     print(item.find('아파트').text)
     print(item.find('월').text)
-
-## 실거래가 가져오기
-@app.route('/price', methods=['GET'])
-def get_items(response):
-    root = ET.fromstring(response.content)
-
-    item_list = []
-    for child in root.find('body').find('items'):
-        elements = child.findall("*")
-        data = {}
-        for element in elements:
-            tag = element.tag.strip()
-            text = element.text.strip()
-            data[tag] = text
-        item_list.append(data)
 
 # df = pd.DataFrame(item_list)
 # items.head()
