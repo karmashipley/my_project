@@ -50,6 +50,8 @@
 
             //시군구 목록 선택
             function list_gugun() {
+                 $("#gugun-list").empty();
+                 $("#dong-list").empty();
                 let si_code = $("#sido-list option:selected").val();
                 $.ajax({
                     type: "GET",
@@ -73,6 +75,7 @@
 
             //읍면동 목록 선택
             function list_dong() {
+                $("#dong-list").empty();
                 let gugun_code = $("#gugun-list option:selected").val();
                 $.ajax({
                     type: "GET",
