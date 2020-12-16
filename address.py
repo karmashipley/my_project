@@ -39,6 +39,5 @@ def test_0(code):
 
 
 # 함수 실행
-# address_to_database()
-list_do()
-# test_0('1111012100')
+address_to_database()
+# list_do()
