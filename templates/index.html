@@ -43,6 +43,10 @@
             list_do()
         });
 
+        // function dataInput() {
+        //     let yearmo = $("#year-list").val() + $("#month-list").val()
+        // }
+
         // 광역시도 목록 선택
         function list_do() {
             $.ajax({
@@ -114,28 +118,18 @@
             $("#dong-list").append(tempHtml);
         }
 
-        // function get_items(){
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "/price",
-        //         data: {},
-        //         success: function (response) {
-        //             let items = response['item_list']
-        //             for (let i = 0, i < item_list.length; i++) {
-        //                 let item = item[i]
-        //                 let month =
-        //                 let dong =
-        //                 let name =
-        //                 let price =
-        //                 let result_html =  `<tr>\
-        //                    <td>${아파트명}</td>
-        //                    <td>${실거래가}</td>
-        //                    </tr>`;
-        //             $('#showResult').append(result_html);
-        //             }
-        //         }
-        //     })
-        // }
+        function search(){
+            $.ajax({
+                type: "GET",
+                url: "/price?dongCode_give="+$("#dong-list").val()+$("#year-list").val()+$("#month-list").val()+$("#from").val()+$("#to").val(),
+                data: {},
+                success: function (response) {
+                    let items = response['list']
+                    console.log(items);
+
+                }
+            })
+        }
 
         function makeResultRow(거래일, 아파트명, 실거래가) {
             let result_html = `<tr>\
@@ -144,19 +138,6 @@
                                <td>${실거래가}</td>
                                </tr>`;
             $('#showResult').append(result_html);
-        }
-
-        function search(){
-            $.ajax({
-                type: "GET",
-                url: "/price?dongCode_give="+$("#dong-list").val(),
-                data: {},
-                success: function (response) {
-                    let items = response['list']
-                    console.log(items);
-
-                }
-            })
         }
     </script>
 </head>
@@ -182,7 +163,7 @@
                     <tr>
                         <td>
                             <label>
-                                <select name="srhYear" class="select_search">
+                                <select name="srhYear" class="select_search" id="year-list">
                                     <option value="">::선택::</option>
                                     <option value="2019">2019년</option>
                                     <option value="2020">2020년</option>
@@ -191,17 +172,17 @@
                         </td>
                         <td style="padding-left: 3px;">
                             <label>
-                                <select name="srhPeriod" class="select_search">
+                                <select name="srhPeriod" class="select_search" id="month-list">
                                     <option value="">::선택::</option>
-                                    <option value="1">1월</option>
-                                    <option value="2">2월</option>
-                                    <option value="3">3월</option>
-                                    <option value="4">4월</option>
-                                    <option value="5">5월</option>
-                                    <option value="6">6월</option>
-                                    <option value="7">7월</option>
-                                    <option value="8">8월</option>
-                                    <option value="9">9월</option>
+                                    <option value="01">1월</option>
+                                    <option value="02">2월</option>
+                                    <option value="03">3월</option>
+                                    <option value="04">4월</option>
+                                    <option value="05">5월</option>
+                                    <option value="06">6월</option>
+                                    <option value="07">7월</option>
+                                    <option value="08">8월</option>
+                                    <option value="09">9월</option>
                                     <option value="10">10월</option>
                                     <option value="11">11월</option>
                                     <option value="12">12월</option>
@@ -225,22 +206,6 @@
                                         style="float:left;" onchange="list_gugun()">
                                     <option value="">::시도선택::</option>
                                     <!--  <option value="11">서울특별시</option>-->
-                                    <!--  <option value="26">부산광역시</option>-->
-                                    <!--  <option value="27">대구광역시</option>-->
-                                    <!--  <option value="28">인천광역시</option>-->
-                                    <!--  <option value="29">광주광역시</option>-->
-                                    <!--  <option value="30">대전광역시</option>-->
-                                    <!--  <option value="31">울산광역시</option>-->
-                                    <!--  <option value="36">세종특별자치시</option>-->
-                                    <!--  <option value="41">경기도</option>-->
-                                    <!--  <option value="42">강원도</option>-->
-                                    <!--  <option value="43">충청북도</option>-->
-                                    <!--  <option value="44">충청남도</option>-->
-                                    <!--  <option value="45">전라북도</option>-->
-                                    <!--  <option value="46">전라남도</option>-->
-                                    <!--  <option value="47">경상북도</option>-->
-                                    <!--  <option value="48">경상남도</option>-->
-                                    <!--  <option value="50">제주특별자치도</option>-->
                                 </select>
                             </label>
                         </td>
@@ -276,11 +241,11 @@
                 <table id="divTradeAmt">
                     <tr>
                         <td>
-                            <label><input type="text" name="fromAmt1"
+                            <label><input type="text" name="fromAmt1" id="from"
                                           class="input_search_R" size='10'
                                           maxlength="9" value=""/> (만원)</label>
                             ~
-                            <label><input type="text" name="toAmt1"
+                            <label><input type="text" name="toAmt1" id="to"
                                           class="input_search_R" size='10'
                                           maxlength="9" value=""/> (만원)</label>
                             <span id="textAmt1"></span>
