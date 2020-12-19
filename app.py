@@ -47,9 +47,8 @@ def list_dong():
 def get_items():
     dongCode_receive = request.args.get('dongCode_give')
 
-    url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?serviceKey=97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D&pageNo=1&numOfRows=10&LAWD_CD=11110&DEAL_YMD=201512'
-    params = {'serviceKey':'97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D','pageNo':1,'numOfRows':10,'LAWD_CD':dongCode_receive[0:5],'DEAL_YMD':'202010'}
-    res = requests.get(url, params=params)
+    url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?serviceKey=97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D&pageNo=1&numOfRows=10&LAWD_CD='+dongCode_receive[0:5]+'&DEAL_YMD=202011'
+    res = requests.get(url)
     root = ET.fromstring(res.content)
     item_list = []
     for child in root.find('body').find('items'):
