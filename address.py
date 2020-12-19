@@ -2,7 +2,7 @@ from pymongo import MongoClient
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
-# 파일을 읽어드려서 데이터 베이스에 저장
+# 파일을 읽어서 데이터 베이스에 저장
 def address_to_database():
     f = open("./address.txt", 'r', encoding='UTF8')
 
@@ -17,15 +17,23 @@ def address_to_database():
                     'sido': address_arr[1],
                     'gugun': address_arr[2]
                 }
-                db.addresses.insert_one(address)
-            else:
+
+            elif len(address_arr) == 4:
                 address = {
                     'code': address_arr[0].strip("0"),
                     'sido': address_arr[1],
                     'gugun': address_arr[2],
                     'dong': address_arr[3]
                 }
-                db.addresses.insert_one(address)
+            elif len(address_arr) > 4:
+                address = {
+                    'code': address_arr[0],
+                    'sido': address_arr[1],
+                    'gugun': address_arr[2],
+                    'dong': address_arr[3]
+                }
+
+            db.addresses.insert_one(address)
     f.close()
 
 # 저장된 주소데이터에서 시,도 정보를 출력

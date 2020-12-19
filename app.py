@@ -37,7 +37,7 @@ def list_gugun():
 @app.route('/dong', methods=['GET'])
 def list_dong():
     gugun_receive = request.args.get('gugun_give')
-    addresses = list(db.addresses.find({"$and": [{'$where': "this.code.length == 8"}, {'code': {"$regex": '^'+gugun_receive}}]}, {'_id': False}))
+    addresses = list(db.addresses.find({"$and": [{'$where': "this.code.length == 10"}, {'code': {"$regex": '^'+gugun_receive}}]}, {'_id': False}))
     for address in addresses:
         print(address)
     return jsonify({'result': 'success', 'addresses': addresses})
@@ -45,32 +45,45 @@ def list_dong():
 ## 실거래가 가져오기
 @app.route('/price', methods=['GET'])
 def get_items():
+    dongCode_receive = request.args.get('dongCode_give')
+
     url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?serviceKey=97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D&pageNo=1&numOfRows=10&LAWD_CD=11110&DEAL_YMD=201512'
-    params = {'serviceKey':'CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D','pageNo':1,'numOfRows':10,'LAWD_CD':'11110','DEAL_YMD':'202010'}
+    params = {'serviceKey':'97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D','pageNo':1,'numOfRows':10,'LAWD_CD':dongCode_receive[0:5],'DEAL_YMD':'202010'}
     res = requests.get(url, params=params)
     root = ET.fromstring(res.content)
     item_list = []
     for child in root.find('body').find('items'):
         elements = child.findall("*")
-        data = {}
+
+        check = False
+        price = ''
+        apt_name = ''
         for element in elements:
             tag = element.tag.strip()
             text = element.text.strip()
-            data[tag] = text
-        item_list.append(data)
+            if tag == '거래금액':
+                price = text
+            if tag == '아파트':
+                apt_name = text
+            if tag == '법정동읍면동코드' and text == dongCode_receive[5:11]:
+                check = True
+        if check:
+            data = {'price': price, 'apt_name': apt_name}
+            item_list.append(data)
+    print(item_list)
     return jsonify({'result': 'success', 'list': item_list})
 
-url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?serviceKey=97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D&pageNo=1&numOfRows=10&LAWD_CD=11110&DEAL_YMD=201512'
-params = {'serviceKey':'CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D','pageNo':1,'numOfRows':10,'LAWD_CD':'11110','DEAL_YMD':'202010'}
-res = requests.get(url, params=params)
-tree = ET.fromstring(res.content)
-items = tree.findall('body/items/item')
-for item in items:
-    print(item.find('법정동').text)
-    print(item.find('거래금액').text)
-    print(item.find('법정동읍면동코드').text)
-    print(item.find('아파트').text)
-    print(item.find('월').text)
+# url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?serviceKey=CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D&pageNo=1&numOfRows=10&LAWD_CD=11110&DEAL_YMD=201512'
+# params = {'serviceKey':'CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D','pageNo':1,'numOfRows':10,'LAWD_CD':'11110','DEAL_YMD':'202010'}
+# res = requests.get(url, params=params)
+# tree = ET.fromstring(res.content)
+# items = tree.findall('body/items/item')
+# for item in items:
+#     print(item.find('법정동').text)
+#     print(item.find('거래금액').text)
+#     print(item.find('법정동읍면동코드').text)
+#     print(item.find('아파트').text)
+#     print(item.find('월').text)
 
 # df = pd.DataFrame(item_list)
 # items.head()

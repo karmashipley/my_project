@@ -19,6 +19,12 @@
             padding: 20px;
         }
 
+        .wrap1 {
+            width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
         h3 {
             display: inline;
             font-weight: bold;
@@ -133,14 +139,25 @@
         //     })
         // }
 
-        function makeResultRow(거래월, 법정동, 아파트명, 실거래가) {
+        function makeResultRow(아파트명, 실거래가) {
             let result_html = `<tr>\
-                               <td>${거래월}</td>
-                               <td>${법정동}</td>
                                <td>${아파트명}</td>
                                <td>${실거래가}</td>
                                </tr>`;
             $('#showResult').append(result_html);
+        }
+
+        function search(){
+            $.ajax({
+                type: "GET",
+                url: "/price?dongCode_give="+$("#dong-list").val(),
+                data: {},
+                success: function (response) {
+                    let items = response['list']
+                    console.log(items);
+
+                }
+            })
         }
     </script>
 </head>
@@ -148,18 +165,17 @@
 <body>
 <div class="wrap" style="outline:black solid 1px">
     <p>
-    <h3>조회조건 입력</h3>
-    </p>
+    <center><h3>조회조건 입력</h3></center>
     <table style="width: 100%;">
         <tr>
             <td class="SB_T01"></td>
             <td class="SB_T02"></td>
             <td class="SB_T03"></td>
         </tr>
-        <tr>
-            <td class="SB_L"></td>
-            <td class="SB_B">
-                <!--                <table style="width: 100%;">-->
+<!--        <tr>-->
+<!--            <td class="SB_L"></td>-->
+<!--            <td class="SB_B">-->
+<!--                &lt;!&ndash;                <table style="width: 100%;">&ndash;&gt;-->
         <tr>
             <td class="search_tit01">기준년도</td>
             <td>
@@ -169,8 +185,8 @@
                             <label>
                                 <select name="srhYear" class="select_search">
                                     <option value="">::선택::</option>
-                                    <option value="2019">2019년도</option>
-                                    <option value="2020">2020년도</option>
+                                    <option value="2019">2019년</option>
+                                    <option value="2020">2020년</option>
                                 </select>
                             </label>
                         </td>
@@ -274,34 +290,31 @@
                 </table>
             </td>
         </tr>
-        </tr>
+<!--        </tr>-->
     </table>
     <p>
     <div class="search">
         <button onclick="search()" type="button" class="btn btn-primary btn-lg btn-block">조회하기</button>
     </div>
 </div>
-</p>
+<div class="wrap1" style="outline:black solid 1px">
 <div class="result">
-    <h3>조회결과</h3>
+    <center><h3>조회결과</h3></center>
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">거래월</th>
-            <th scope="col">법정동</th>
             <th scope="col">아파트명</th>
             <th scope="col">실거래가</th>
         </tr>
         </thead>
         <tbody id="showResult">
         <tr>
-            <td>10월</td>
-            <td>삼성동</td>
-            <td>래미안아파트</td>
-            <td>150000</td>
+            <td></td>
+            <td></td>
         </tr>
         </tbody>
     </table>
+</div>
 </div>
 </body>
 
