@@ -70,11 +70,15 @@ def get_items():
                 price = text
             if tag == '아파트':
                 apt_name = text
+            if tag == '전용면적':
+                square = text
+            if tag == '층':
+                floor = text
             dong_name = db.addresses.find_one({'code':dongCode_receive})['dong']
             if tag == '법정동' and text == dong_name:
                 check = True
         if check:
-            data = {'t_date': t_date, 'price': price, 'apt_name': apt_name}
+            data = {'t_date': t_date, 'price': price, 'apt_name': apt_name, 'square': square, 'floor': floor}
             item_list.append(data)
     print(item_list)
     return jsonify({'result': 'success', 'list': item_list})

@@ -134,17 +134,19 @@
                     if(response['result'] == 'success'){
                         let items = response['list']
                         for (let i = 0; i < items.length; i++) {
-                            makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["price"]);
+                            makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["square"], items[i]["floor"], items[i]["price"]);
                         }
                     }
                 }
             })
         }
 
-        function makeResultRow(t_date, apt_name, price) {
+        function makeResultRow(t_date, apt_name, square, floor, price) {
             let result_html = `<tr>\
                                <td>${t_date}</td>
                                <td>${apt_name}</td>
+                               <td>${square}</td>
+                               <td>${floor}</td>
                                <td>${price}</td>
                                </tr>`;
             $('#showResult').append(result_html);
@@ -279,7 +281,9 @@
         <tr>
             <th scope="col">거래일</th>
             <th scope="col">아파트명</th>
-            <th scope="col">실거래가</th>
+            <th scope="col">면적(제곱미터)</th>
+            <th scope="col">층</th>
+            <th scope="col">실거래가(만원)</th>
         </tr>
         </thead>
         <tbody id="showResult">
