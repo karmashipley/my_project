@@ -121,7 +121,7 @@
             $("#dong-list").append(tempHtml);
         }
 
-        function search(){
+        function search() {
             let dong = $("#dong-list").val();
             let yymm = $('#year-list').val() + $('#month-list').val();
             // let from = $('#from').val();
@@ -129,9 +129,10 @@
             $.ajax({
                 type: "GET",
                 url: `/price?dongCode_give=${dong}&yymm_give=${yymm}`,
+                // url: `/price?dongCode_give=${dong}&yymm_give=${yymm}&from_give=${from}&to_give=${to}`,
                 data: {},
                 success: function (response) {
-                    if(response['result'] == 'success'){
+                    if (response['result'] == 'success') {
                         let items = response['list']
                         for (let i = 0; i < items.length; i++) {
                             makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["square"], items[i]["floor"], items[i]["price"]);
@@ -139,6 +140,46 @@
                     }
                 }
             })
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/x-www-form-urlencoded",
+                url: "/price",
+                data: "onLoad=%5Btype%20Function%5D&count=15&page=1",
+                async: true,
+                error: function (res) {
+                    console.log("ajax error - " + res);
+                },
+                success: function (res) {
+                    console.log("ajax success - " + res);
+                },
+                beforeSend: function () {
+                    var width = 0;
+                    var height = 0;
+                    var left = 0;
+                    var top = 0;
+                    width = 50;
+                    height = 50;
+
+                    top = ($(window).height() - height) / 2 + $(window).scrollTop();
+                    left = ($(window).width() - width) / 2 + $(window).scrollLeft();
+
+                    if ($("#div_ajax_load_image").length != 0) {
+                        $("#div_ajax_load_image").css({
+                            "top": top + "px",
+                            "left": left + "px"
+                        });
+                        $("#div_ajax_load_image").show();
+                    } else {
+                        $('body').append('<div id="div_ajax_load_image" style="position:absolute; top:' + top + 'px; left:' + left + 'px; width:' + width + 'px; height:' + height + 'px; z-index:9999; background:#f0f0f0; filter:alpha(opacity=50); opacity:alpha*0.5; margin:auto; padding:0; "><img src="/static/loading.gif" style="width:50px; height:50px;"></div>');
+                    }
+
+                },
+                complete: function () {
+                    $("#div_ajax_load_image").hide();
+                }
+            });
+
         }
 
         function makeResultRow(t_date, apt_name, square, floor, price) {
@@ -158,11 +199,11 @@
 <div class="wrap" style="outline:black solid 1px">
     <center><h3>검색정보</h3></center><p></p>
     <table style="width: 100%;">
-        <tr>
-            <td class="SB_T01"></td>
-            <td class="SB_T02"></td>
-            <td class="SB_T03"></td>
-        </tr>
+<!--        <tr>-->
+<!--            <td class="SB_T01"></td>-->
+<!--            <td class="SB_T02"></td>-->
+<!--            <td class="SB_T03"></td>-->
+<!--        </tr>-->
 <!--        <tr>-->
 <!--            <td class="SB_L"></td>-->
 <!--            <td class="SB_B">-->
@@ -205,6 +246,7 @@
                 </table>
             </td>
         </tr>
+
         <tr>
             <td class="search_tit01">지역선택</td>
             <td>
@@ -272,28 +314,30 @@
         <button onclick="search()" type="button" class="btn btn-warning btn-lg">조회하기</button>
     </div>
 </div>
+
 <div class="wrap1" style="outline:black solid 1px">
-<div class="result">
-    <center><h3>당신이 찾는 아파트는 여기에</h3></center><p></p>
-    <table class="table">
-        <thead class="thead-light">
-        <tr>
-            <th scope="col">거래일</th>
-            <th scope="col">아파트명</th>
-            <th scope="col">면적(제곱미터)</th>
-            <th scope="col">층</th>
-            <th scope="col">실거래가(만원)</th>
-        </tr>
-        </thead>
-        <tbody id="showResult">
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="result">
+        <center><h3>당신이 찾는 아파트는 여기에</h3></center>
+        <p></p>
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">거래일</th>
+                <th scope="col">아파트명</th>
+                <th scope="col">면적(제곱미터)</th>
+                <th scope="col">층</th>
+                <th scope="col">실거래가(만원)</th>
+            </tr>
+            </thead>
+            <tbody id="showResult">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 
