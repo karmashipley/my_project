@@ -156,8 +156,7 @@
 
 <body>
 <div class="wrap" style="outline:black solid 1px">
-    <p>
-    <center><h3>조회조건 입력</h3></center>
+    <center><h3>검색정보</h3></center><p></p>
     <table style="width: 100%;">
         <tr>
             <td class="SB_T01"></td>
@@ -169,14 +168,14 @@
 <!--            <td class="SB_B">-->
 <!--                &lt;!&ndash;                <table style="width: 100%;">&ndash;&gt;-->
         <tr>
-            <td class="search_tit01">기준년도</td>
+            <td class="search_tit01">조회년월</td>
             <td>
                 <table>
                     <tr>
                         <td>
                             <label>
                                 <select name="srhYear" class="select_search" id="year-list">
-                                    <option value="">::선택::</option>
+                                    <option value="">::거래년도::</option>
                                     <option value="2018">2018년</option>
                                     <option value="2019">2019년</option>
                                     <option value="2020">2020년</option>
@@ -186,7 +185,7 @@
                         <td style="padding-left: 3px;">
                             <label>
                                 <select name="srhPeriod" class="select_search" id="month-list">
-                                    <option value="">::선택::</option>
+                                    <option value="">::거래월::</option>
                                     <option value="01">1월</option>
                                     <option value="02">2월</option>
                                     <option value="03">3월</option>
@@ -217,7 +216,7 @@
                                         class="select_search"
                                         id="sido-list"
                                         style="float:left;" onchange="list_gugun()">
-                                    <option value="">::시도선택::</option>
+                                    <option value="">::광역시도 선택::</option>
                                     <!--  <option value="11">서울특별시</option>-->
                                 </select>
                             </label>
@@ -228,7 +227,7 @@
                                         class="select_search"
                                         id="gugun-list"
                                         style="float:left;" onchange="list_dong()">
-                                    <option value="">::구군선택::</option>
+                                    <option value="">::시구군선택::</option>
                                     <!-- <option value="11680">강남구</option>-->
                                 </select>
                             </label>
@@ -270,14 +269,14 @@
     </table>
     <p>
     <div class="search">
-        <button onclick="search()" type="button" class="btn btn-primary btn-lg btn-block">조회하기</button>
+        <button onclick="search()" type="button" class="btn btn-warning btn-lg">조회하기</button>
     </div>
 </div>
 <div class="wrap1" style="outline:black solid 1px">
 <div class="result">
-    <center><h3>당신이 찾는 아파트는 여기에</h3></center>
+    <center><h3>당신이 찾는 아파트는 여기에</h3></center><p></p>
     <table class="table">
-        <thead>
+        <thead class="thead-light">
         <tr>
             <th scope="col">거래일</th>
             <th scope="col">아파트명</th>
