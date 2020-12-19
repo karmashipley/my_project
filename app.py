@@ -46,9 +46,11 @@ def list_dong():
 @app.route('/price', methods=['GET'])
 def get_items():
     dongCode_receive = request.args.get('dongCode_give')
+    yymm_receive = request.args.get('yymm_give')
+    from_receive = request.args.get('from_give')
+    to_receive = request.args.get('to_give')
 
-    # url = 'http://openapi.molit.go.kr/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTradeDev?serviceKey=97cuqDDHG2c0S%2Bia01naWZSkqK5hz8svWszWFQ7h8pdi%2BUgafcVl4O9six0eKcmLe7BF%2FXMaOkrC4h%2Fc5dcofQ%3D%3D&pageNo=1&numOfRows=10&LAWD_CD='+dongCode_receive[0:5]+'&DEAL_YMD=202011'
-    url = 'http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade?LAWD_CD=11110&DEAL_YMD=201512&serviceKey=CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D'
+    url = 'http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade?LAWD_CD='+dongCode_receive[0:5]+'&DEAL_YMD='+yymm_receive+'&serviceKey=CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D'
     res = requests.get(url)
     root = ET.fromstring(res.content)
     item_list = []
@@ -68,7 +70,8 @@ def get_items():
                 price = text
             if tag == '아파트':
                 apt_name = text
-            if tag == '법정동읍면동코드' and text == dongCode_receive[5:11]:
+            dong_name = db.addresses.find_one({'code':dongCode_receive})['dong']
+            if tag == '법정동' and text == dong_name:
                 check = True
         if check:
             data = {'t_date': t_date, 'price': price, 'apt_name': apt_name}

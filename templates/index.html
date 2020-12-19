@@ -2,12 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>부동산 가격으로 아파트 찾기</title>
+    <title>아파트 실거래가 찾기</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
+
+<!--    &lt;!&ndash; JS &ndash;&gt;-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"-->
+<!--            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"-->
+<!--            crossorigin="anonymous">-->
+<!--    </script>-->
+
     <style type="text/css">
         .search {
             text-align: center;
@@ -31,7 +38,7 @@
         }
     </style>
 
-    <link rel="stylesheet" href="/css/common.css" type="text/css"/>
+<!--    <link rel="stylesheet" href="/css/common.css" type="text/css"/>-->
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -42,10 +49,6 @@
         $(document).ready(function () {
             list_do()
         });
-
-        // function dataInput() {
-        //     let yearmo = $("#year-list").val() + $("#month-list").val()
-        // }
 
         // 광역시도 목록 선택
         function list_do() {
@@ -119,23 +122,30 @@
         }
 
         function search(){
+            let dong = $("#dong-list").val();
+            let yymm = $('#year-list').val() + $('#month-list').val();
+            // let from = $('#from').val();
+            // let to = $('#to').val();
             $.ajax({
                 type: "GET",
-                url: "/price?dongCode_give="+$("#dong-list").val()+$("#year-list").val()+$("#month-list").val()+$("#from").val()+$("#to").val(),
+                url: `/price?dongCode_give=${dong}&yymm_give=${yymm}`,
                 data: {},
                 success: function (response) {
-                    let items = response['list']
-                    console.log(items);
-
+                    if(response['result'] == 'success'){
+                        let items = response['list']
+                        for (let i = 0; i < items.length; i++) {
+                            makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["price"]);
+                        }
+                    }
                 }
             })
         }
 
-        function makeResultRow(거래일, 아파트명, 실거래가) {
+        function makeResultRow(t_date, apt_name, price) {
             let result_html = `<tr>\
-                               <td>${거래일}</td>
-                               <td>${아파트명}</td>
-                               <td>${실거래가}</td>
+                               <td>${t_date}</td>
+                               <td>${apt_name}</td>
+                               <td>${price}</td>
                                </tr>`;
             $('#showResult').append(result_html);
         }
@@ -165,6 +175,7 @@
                             <label>
                                 <select name="srhYear" class="select_search" id="year-list">
                                     <option value="">::선택::</option>
+                                    <option value="2018">2018년</option>
                                     <option value="2019">2019년</option>
                                     <option value="2020">2020년</option>
                                 </select>
@@ -235,25 +246,24 @@
                 </table>
             </td>
         </tr>
-        <tr id="divAmt">
-            <td class="search_tit01">금액선택</td>
-            <td>
-                <table id="divTradeAmt">
-                    <tr>
-                        <td>
-                            <label><input type="text" name="fromAmt1" id="from"
-                                          class="input_search_R" size='10'
-                                          maxlength="9" value=""/> (만원)</label>
-                            ~
-                            <label><input type="text" name="toAmt1" id="to"
-                                          class="input_search_R" size='10'
-                                          maxlength="9" value=""/> (만원)</label>
-                            <span id="textAmt1"></span>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
+<!--        <tr id="divAmt">-->
+<!--            <td class="search_tit01">금액선택</td>-->
+<!--            <td>-->
+<!--                <table id="divTradeAmt">-->
+<!--                    <tr>-->
+<!--                        <td>-->
+<!--                            <label><input type="text" name="fromAmt1" id="from"-->
+<!--                                          class="input_search_R" size='10'-->
+<!--                                          maxlength="9" value=""/> (만원)</label>-->
+<!--                            ~-->
+<!--                            <label><input type="text" name="toAmt1" id="to"-->
+<!--                                          class="input_search_R" size='10'-->
+<!--                                          maxlength="9" value=""/> (만원)</label>-->
+<!--                            <span id="textAmt1"></span>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </td>-->
 <!--        </tr>-->
     </table>
     <p>
@@ -263,7 +273,7 @@
 </div>
 <div class="wrap1" style="outline:black solid 1px">
 <div class="result">
-    <center><h3>조회결과</h3></center>
+    <center><h3>당신이 찾는 아파트는 여기에</h3></center>
     <table class="table">
         <thead>
         <tr>
@@ -274,6 +284,7 @@
         </thead>
         <tbody id="showResult">
         <tr>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
