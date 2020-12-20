@@ -9,11 +9,11 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
 
-<!--    &lt;!&ndash; JS &ndash;&gt;-->
-<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"-->
-<!--            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"-->
-<!--            crossorigin="anonymous">-->
-<!--    </script>-->
+    <!--    &lt;!&ndash; JS &ndash;&gt;-->
+    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"-->
+    <!--            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"-->
+    <!--            crossorigin="anonymous">-->
+    <!--    </script>-->
 
     <style type="text/css">
         .search {
@@ -36,9 +36,31 @@
             display: inline;
             font-weight: bold;
         }
+
+        .wrap-loading { /*화면 전체를 어둡게 합니다.*/
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2); /*not in ie */
+            filter: progid:DXImageTransform.Microsoft.Gradient(startColorstr='#20000000', endColorstr='#20000000'); /* ie */
+        }
+
+        .wrap-loading div { /*로딩 이미지*/
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-left: -21px;
+            margin-top: -21px;
+        }
+
+        .display-none { /*감추기*/
+            display: none;
+        }
     </style>
 
-<!--    <link rel="stylesheet" href="/css/common.css" type="text/css"/>-->
+    <!--    <link rel="stylesheet" href="/css/common.css" type="text/css"/>-->
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -122,6 +144,8 @@
         }
 
         function search() {
+            $('#showResult').empty();
+            $('.wrap-loading').removeClass('display-none');
             let dong = $("#dong-list").val();
             let yymm = $('#year-list').val() + $('#month-list').val();
             // let from = $('#from').val();
@@ -138,48 +162,9 @@
                             makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["square"], items[i]["floor"], items[i]["price"]);
                         }
                     }
+                     $('.wrap-loading').addClass('display-none');
                 }
             })
-
-            $.ajax({
-                type: "POST",
-                contentType: "application/x-www-form-urlencoded",
-                url: "/price",
-                data: "onLoad=%5Btype%20Function%5D&count=15&page=1",
-                async: true,
-                error: function (res) {
-                    console.log("ajax error - " + res);
-                },
-                success: function (res) {
-                    console.log("ajax success - " + res);
-                },
-                beforeSend: function () {
-                    var width = 0;
-                    var height = 0;
-                    var left = 0;
-                    var top = 0;
-                    width = 50;
-                    height = 50;
-
-                    top = ($(window).height() - height) / 2 + $(window).scrollTop();
-                    left = ($(window).width() - width) / 2 + $(window).scrollLeft();
-
-                    if ($("#div_ajax_load_image").length != 0) {
-                        $("#div_ajax_load_image").css({
-                            "top": top + "px",
-                            "left": left + "px"
-                        });
-                        $("#div_ajax_load_image").show();
-                    } else {
-                        $('body').append('<div id="div_ajax_load_image" style="position:absolute; top:' + top + 'px; left:' + left + 'px; width:' + width + 'px; height:' + height + 'px; z-index:9999; background:#f0f0f0; filter:alpha(opacity=50); opacity:alpha*0.5; margin:auto; padding:0; "><img src="/static/loading.gif" style="width:50px; height:50px;"></div>');
-                    }
-
-                },
-                complete: function () {
-                    $("#div_ajax_load_image").hide();
-                }
-            });
-
         }
 
         function makeResultRow(t_date, apt_name, square, floor, price) {
@@ -197,17 +182,21 @@
 
 <body>
 <div class="wrap" style="outline:black solid 1px">
-    <center><h3>검색정보</h3></center><p></p>
+    <div class="wrap-loading display-none">
+        <div><img src="{{ url_for('static', filename='loading.gif') }}"/></div>
+    </div>
+    <center><h3>검색정보</h3></center>
+    <p></p>
     <table style="width: 100%;">
-<!--        <tr>-->
-<!--            <td class="SB_T01"></td>-->
-<!--            <td class="SB_T02"></td>-->
-<!--            <td class="SB_T03"></td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td class="SB_L"></td>-->
-<!--            <td class="SB_B">-->
-<!--                &lt;!&ndash;                <table style="width: 100%;">&ndash;&gt;-->
+        <!--        <tr>-->
+        <!--            <td class="SB_T01"></td>-->
+        <!--            <td class="SB_T02"></td>-->
+        <!--            <td class="SB_T03"></td>-->
+        <!--        </tr>-->
+        <!--        <tr>-->
+        <!--            <td class="SB_L"></td>-->
+        <!--            <td class="SB_B">-->
+        <!--                &lt;!&ndash;                <table style="width: 100%;">&ndash;&gt;-->
         <tr>
             <td class="search_tit01">조회년월</td>
             <td>
@@ -289,25 +278,25 @@
                 </table>
             </td>
         </tr>
-<!--        <tr id="divAmt">-->
-<!--            <td class="search_tit01">금액선택</td>-->
-<!--            <td>-->
-<!--                <table id="divTradeAmt">-->
-<!--                    <tr>-->
-<!--                        <td>-->
-<!--                            <label><input type="text" name="fromAmt1" id="from"-->
-<!--                                          class="input_search_R" size='10'-->
-<!--                                          maxlength="9" value=""/> (만원)</label>-->
-<!--                            ~-->
-<!--                            <label><input type="text" name="toAmt1" id="to"-->
-<!--                                          class="input_search_R" size='10'-->
-<!--                                          maxlength="9" value=""/> (만원)</label>-->
-<!--                            <span id="textAmt1"></span>-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-<!--            </td>-->
-<!--        </tr>-->
+        <!--        <tr id="divAmt">-->
+        <!--            <td class="search_tit01">금액선택</td>-->
+        <!--            <td>-->
+        <!--                <table id="divTradeAmt">-->
+        <!--                    <tr>-->
+        <!--                        <td>-->
+        <!--                            <label><input type="text" name="fromAmt1" id="from"-->
+        <!--                                          class="input_search_R" size='10'-->
+        <!--                                          maxlength="9" value=""/> (만원)</label>-->
+        <!--                            ~-->
+        <!--                            <label><input type="text" name="toAmt1" id="to"-->
+        <!--                                          class="input_search_R" size='10'-->
+        <!--                                          maxlength="9" value=""/> (만원)</label>-->
+        <!--                            <span id="textAmt1"></span>-->
+        <!--                        </td>-->
+        <!--                    </tr>-->
+        <!--                </table>-->
+        <!--            </td>-->
+        <!--        </tr>-->
     </table>
     <p>
     <div class="search">
