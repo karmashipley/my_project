@@ -153,7 +153,6 @@
             $.ajax({
                 type: "GET",
                 url: `/price?dongCode_give=${dong}&yymm_give=${yymm}`,
-                // url: `/price?dongCode_give=${dong}&yymm_give=${yymm}&from_give=${from}&to_give=${to}`,
                 data: {},
                 success: function (response) {
                     if (response['result'] == 'success') {
@@ -162,20 +161,41 @@
                             makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["square"], items[i]["floor"], items[i]["price"]);
                         }
                     }
-                     $('.wrap-loading').addClass('display-none');
+                    $('.wrap-loading').addClass('display-none');
                 }
             })
-        }
 
-        function makeResultRow(t_date, apt_name, square, floor, price) {
-            let result_html = `<tr>\
+            // $.ajax({
+            //     type: "GET",
+            //     url: `/price?dongCode_give=${dong}&yymm_give=${yymm}&from_give=${from}&to_give=${to}`,
+            //     data: {},
+            //     success: function (response) {
+            //         if (response['result'] == 'success') {
+            //             if (price > $('#from').val() and
+            //             price < $('#to').val()
+            //         )
+            //             {
+            //                 let items = response['list']
+            //                 for (let i = 0; i < items.length; i++) {
+            //                     makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["square"], items[i]["floor"], items[i]["price"]);
+            //                 }
+            //             }
+            //         } else {
+            //             alert("입력한 조건에 맞는 아파트가 없습니다")
+            //         }
+            //     }
+            // })
+
+            function makeResultRow(t_date, apt_name, square, floor, price) {
+                let result_html = `<tr>\
                                <td>${t_date}</td>
                                <td>${apt_name}</td>
                                <td>${square}</td>
                                <td>${floor}</td>
                                <td>${price}</td>
                                </tr>`;
-            $('#showResult').append(result_html);
+                $('#showResult').append(result_html);
+            }
         }
     </script>
 </head>
@@ -278,25 +298,25 @@
                 </table>
             </td>
         </tr>
-        <!--        <tr id="divAmt">-->
-        <!--            <td class="search_tit01">금액선택</td>-->
-        <!--            <td>-->
-        <!--                <table id="divTradeAmt">-->
-        <!--                    <tr>-->
-        <!--                        <td>-->
-        <!--                            <label><input type="text" name="fromAmt1" id="from"-->
-        <!--                                          class="input_search_R" size='10'-->
-        <!--                                          maxlength="9" value=""/> (만원)</label>-->
-        <!--                            ~-->
-        <!--                            <label><input type="text" name="toAmt1" id="to"-->
-        <!--                                          class="input_search_R" size='10'-->
-        <!--                                          maxlength="9" value=""/> (만원)</label>-->
-        <!--                            <span id="textAmt1"></span>-->
-        <!--                        </td>-->
-        <!--                    </tr>-->
-        <!--                </table>-->
-        <!--            </td>-->
-        <!--        </tr>-->
+<!--                <tr id="divAmt">-->
+<!--                    <td class="search_tit01">금액선택</td>-->
+<!--                    <td>-->
+<!--                        <table id="divTradeAmt">-->
+<!--                            <tr>-->
+<!--                                <td>-->
+<!--                                    <label><input type="text" name="fromAmt1" id="from"-->
+<!--                                                  class="input_search_R" size='10'-->
+<!--                                                  maxlength="9" value=""/> (만원)</label>-->
+<!--                                    ~-->
+<!--                                    <label><input type="text" name="toAmt1" id="to"-->
+<!--                                                  class="input_search_R" size='10'-->
+<!--                                                  maxlength="9" value=""/> (만원)</label>-->
+<!--                                    <span id="textAmt1"></span>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                        </table>-->
+<!--                    </td>-->
+<!--                </tr>-->
     </table>
     <p>
     <div class="search">
