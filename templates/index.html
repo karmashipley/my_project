@@ -150,6 +150,16 @@
             let yymm = $('#year-list').val() + $('#month-list').val();
             let from = $('#from').val();
             let to = $('#to').val();
+
+            // if (from == "") {
+            //     alert ("찾고자 하는 아파트의 최저 금액을 입력해주세요")
+            //     $("#from").focus()
+            //     return
+            // } else if (to == "") {
+            //     alert ("찾고자 하는 아파트의 최대 금액을 입력해주세요")
+            //     $("#to").focus()
+            //     return
+            // }
             $.ajax({
                 type: "GET",
                 // url: `/price?dongCode_give=${dong}&yymm_give=${yymm}`,
@@ -185,7 +195,7 @@
     <div class="wrap-loading display-none">
         <div><img src="{{ url_for('static', filename='loading.gif') }}"/></div>
     </div>
-    <center><h3>검색정보</h3></center>
+    <center><h3>부동산 검색 기초 정보</h3></center>
     <p></p>
     <table style="width: 100%;">
         <tr>
@@ -230,7 +240,7 @@
         </tr>
 
         <tr>
-            <td class="search_tit01">지역선택</td>
+            <td class="search_tit01">지역</td>
             <td>
                 <table>
                     <tr>
@@ -272,7 +282,7 @@
             </td>
         </tr>
                 <tr id="divAmt">
-                    <td class="search_tit01">금액선택</td>
+                    <td class="search_tit01">금액</td>
                     <td>
                         <table id="divTradeAmt">
                             <tr>
