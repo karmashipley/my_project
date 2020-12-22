@@ -56,7 +56,6 @@ def get_items():
     item_list = []
     for child in root.find('body').find('items'):
         elements = child.findall("*")
-
         check = False
         t_date = ''
         price = ''
@@ -68,6 +67,12 @@ def get_items():
                 t_date = text
             if tag == '거래금액':
                 price = text
+                if from_receive is not None and to_receive is not None:
+                    if int(from_receive) <= int(price.replace(',', '')) and int(to_receive) >= int(
+                            price.replace(',', '')):
+                        price_ckeck = True
+                    else:
+                        price_ckeck = False
             if tag == '아파트':
                 apt_name = text
             if tag == '전용면적':
@@ -77,7 +82,7 @@ def get_items():
             dong_name = db.addresses.find_one({'code':dongCode_receive})['dong']
             if tag == '법정동' and text == dong_name:
                 check = True
-        if check:
+        if check and price_ckeck:
             data = {'t_date': t_date, 'price': price, 'apt_name': apt_name, 'square': square, 'floor': floor}
             item_list.append(data)
     print(item_list)

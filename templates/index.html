@@ -148,11 +148,12 @@
             $('.wrap-loading').removeClass('display-none');
             let dong = $("#dong-list").val();
             let yymm = $('#year-list').val() + $('#month-list').val();
-            // let from = $('#from').val();
-            // let to = $('#to').val();
+            let from = $('#from').val();
+            let to = $('#to').val();
             $.ajax({
                 type: "GET",
-                url: `/price?dongCode_give=${dong}&yymm_give=${yymm}`,
+                // url: `/price?dongCode_give=${dong}&yymm_give=${yymm}`,
+                url: `/price?dongCode_give=${dong}&yymm_give=${yymm}&from_give=${from}&to_give=${to}`,
                 data: {},
                 success: function (response) {
                     if (response['result'] == 'success') {
@@ -164,27 +165,6 @@
                     $('.wrap-loading').addClass('display-none');
                 }
             })
-
-            // $.ajax({
-            //     type: "GET",
-            //     url: `/price?dongCode_give=${dong}&yymm_give=${yymm}&from_give=${from}&to_give=${to}`,
-            //     data: {},
-            //     success: function (response) {
-            //         if (response['result'] == 'success') {
-            //             if (price > $('#from').val() and
-            //             price < $('#to').val()
-            //         )
-            //             {
-            //                 let items = response['list']
-            //                 for (let i = 0; i < items.length; i++) {
-            //                     makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["square"], items[i]["floor"], items[i]["price"]);
-            //                 }
-            //             }
-            //         } else {
-            //             alert("입력한 조건에 맞는 아파트가 없습니다")
-            //         }
-            //     }
-            // })
 
             function makeResultRow(t_date, apt_name, square, floor, price) {
                 let result_html = `<tr>\
@@ -208,15 +188,6 @@
     <center><h3>검색정보</h3></center>
     <p></p>
     <table style="width: 100%;">
-        <!--        <tr>-->
-        <!--            <td class="SB_T01"></td>-->
-        <!--            <td class="SB_T02"></td>-->
-        <!--            <td class="SB_T03"></td>-->
-        <!--        </tr>-->
-        <!--        <tr>-->
-        <!--            <td class="SB_L"></td>-->
-        <!--            <td class="SB_B">-->
-        <!--                &lt;!&ndash;                <table style="width: 100%;">&ndash;&gt;-->
         <tr>
             <td class="search_tit01">조회년월</td>
             <td>
@@ -226,6 +197,8 @@
                             <label>
                                 <select name="srhYear" class="select_search" id="year-list">
                                     <option value="">::거래년도::</option>
+                                    <option value="2016">2016년</option>
+                                    <option value="2017">2017년</option>
                                     <option value="2018">2018년</option>
                                     <option value="2019">2019년</option>
                                     <option value="2020">2020년</option>
@@ -298,25 +271,25 @@
                 </table>
             </td>
         </tr>
-<!--                <tr id="divAmt">-->
-<!--                    <td class="search_tit01">금액선택</td>-->
-<!--                    <td>-->
-<!--                        <table id="divTradeAmt">-->
-<!--                            <tr>-->
-<!--                                <td>-->
-<!--                                    <label><input type="text" name="fromAmt1" id="from"-->
-<!--                                                  class="input_search_R" size='10'-->
-<!--                                                  maxlength="9" value=""/> (만원)</label>-->
-<!--                                    ~-->
-<!--                                    <label><input type="text" name="toAmt1" id="to"-->
-<!--                                                  class="input_search_R" size='10'-->
-<!--                                                  maxlength="9" value=""/> (만원)</label>-->
-<!--                                    <span id="textAmt1"></span>-->
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                        </table>-->
-<!--                    </td>-->
-<!--                </tr>-->
+                <tr id="divAmt">
+                    <td class="search_tit01">금액선택</td>
+                    <td>
+                        <table id="divTradeAmt">
+                            <tr>
+                                <td>
+                                    <label><input type="text" name="fromAmt1" id="from"
+                                                  class="input_search_R" size='10'
+                                                  maxlength="9" value=""/> (만원 이상)</label>
+                                    ~
+                                    <label><input type="text" name="toAmt1" id="to"
+                                                  class="input_search_R" size='10'
+                                                  maxlength="9" value=""/> (만원 이하)</label>
+                                    <span id="textAmt1"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
     </table>
     <p>
     <div class="search">
