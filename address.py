@@ -10,29 +10,11 @@ def address_to_database():
     for line in lines:
         if '폐지' not in line:
             address_arr = line.split()
-            # address = {'info': line.split()}
-            if len(address_arr) == 3:
-                address = {
-                    'code': address_arr[0].strip("0"),
-                    'sido': address_arr[1],
-                    'gugun': address_arr[2]
-                }
-
-            elif len(address_arr) == 4:
-                address = {
-                    'code': address_arr[0].strip("0"),
-                    'sido': address_arr[1],
-                    'gugun': address_arr[2],
-                    'dong': address_arr[3]
-                }
-            elif len(address_arr) > 4:
-                address = {
-                    'code': address_arr[0],
-                    'sido': address_arr[1],
-                    'gugun': address_arr[2],
-                    'dong': address_arr[3]
-                }
-
+            column_arr = ['code','depth1','depth2','depth3','depth4','depth5']
+            address = {}
+            for idx,add in enumerate(address_arr):
+                if idx < len(address_arr) - 1:
+                    address[column_arr[idx]] = add
             db.addresses.insert_one(address)
     f.close()
 
@@ -44,7 +26,6 @@ def list_do():
 
 def test_0(code):
     print(code.strip("0"))
-
 
 # 함수 실행
 address_to_database()

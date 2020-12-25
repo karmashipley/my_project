@@ -69,7 +69,8 @@
             crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () {
-            list_do()
+            // list_do()
+            list_under_depth(0)
         });
 
         // 광역시도 목록 선택
@@ -91,7 +92,7 @@
 
         function makeSido(sido, code) {
             let tempHtml = `<option value="${code}">${sido}</option>`;
-            $("#sido-list").append(tempHtml);
+            $("#depth1").append(tempHtml);
         }
 
         //시군구 목록 선택
@@ -146,7 +147,7 @@
         function search() {
             $('#showResult').empty();
             $('.wrap-loading').removeClass('display-none');
-            let dong = $("#dong-list").val();
+            let dong = getDongCode();
             let yymm = $('#year-list').val() + $('#month-list').val();
             let from = $('#from').val();
             let to = $('#to').val();
@@ -187,6 +188,73 @@
                 $('#showResult').append(result_html);
             }
         }
+
+
+        // function list_sido() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "/addresses/new?depth=1",
+        //         data: {},
+        //         success: function (response) {
+        //             if (response['result'] == 'success') {
+        //                 let addresses = response['addresses'];
+        //                 for (let i = 0; i < addresses.length; i++) {
+        //                     let tempHtml = `<option value="${addresses[i]["code"]}">${addresses[i]["depth1"]}</option>`;
+        //                     $("#depth1").append(tempHtml);
+        //                 }
+        //             }
+        //         }
+        //     })
+        // }
+
+
+        //추가된 부분
+        function list_under_depth(depth) {
+            let setDepth = depth + 1;
+            init_select(setDepth)
+            let code = 0;
+            if(depth > 0 ) {
+                code = $(`#depth${depth}`).find('option:selected').val();
+            }
+
+            $.ajax({
+                type: "GET",
+                url: `/addresses/new?depth=${setDepth}&code=${code}`,
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let addresses = response['addresses'];
+                        for (let i = 0; i < addresses.length; i++) {
+                            let tempHtml = `<option value="${addresses[i]["code"]}">${addresses[i]["depth"+setDepth]}</option>`;
+                            $(`#depth${setDepth}`).append(tempHtml);
+                        }
+                        if(addresses.length > 0 ){
+                            $(`#depth${setDepth}`).css('display','block');
+                        }
+                    }
+                }
+            })
+        }
+
+        function init_select(depth) {
+             $(`#depth${depth}`).html('<option value="">선택해주세요</option>');
+            for(let i = 2 ; i < 6 ; i++) {
+                if(i > depth) {
+                    $(`#depth${i}`).css('display', 'none');
+                }
+            }
+        }
+
+        function getDongCode() {
+            let code = '';
+            for(let i = 3 ; i < 6 ; i++) {
+               if($(`#depth${i}`).css('display') == 'block'){
+                   code = $(`#depth${i}`).val();
+               }
+            }
+            return code;
+        }
+
     </script>
 </head>
 
@@ -248,10 +316,8 @@
                             <label>
                                 <select name="Code"
                                         class="select_search"
-                                        id="sido-list"
-                                        style="float:left;" onchange="list_gugun()">
-                                    <option value="">::광역시도 선택::</option>
-                                    <!--  <option value="11">서울특별시</option>-->
+                                        id="depth1"
+                                        style="float:left;" onchange="list_under_depth(1)">
                                 </select>
                             </label>
                         </td>
@@ -259,10 +325,8 @@
                             <label>
                                 <select name="gugunCode"
                                         class="select_search"
-                                        id="gugun-list"
-                                        style="float:left;" onchange="list_dong()">
-                                    <option value="">::시구군선택::</option>
-                                    <!-- <option value="11680">강남구</option>-->
+                                        id="depth2"
+                                        style="float:left; display:none;" onchange="list_under_depth(2)">
                                 </select>
                             </label>
                         </td>
@@ -270,10 +334,26 @@
                             <label>
                                 <select name="dongCode"
                                         class="select_search"
-                                        id="dong-list"
-                                        style="float:left;">
-                                    <option value="">::읍면동선택::</option>
-                                    <!-- <option value="1168010300">개포동</option>-->
+                                        id="depth3"
+                                        style="float:left; display:none;" onchange="list_under_depth(3)">
+                                </select>
+                            </label>
+                        </td>
+                        <td style="padding-left: 3px;">
+                            <label>
+                                <select name="dongCode"
+                                        class="select_search"
+                                        id="depth4"
+                                        style="float:left; display:none;" onchange="list_under_depth(4)">
+                                </select>
+                            </label>
+                        </td>
+                        <td style="padding-left: 3px;">
+                            <label>
+                                <select name="dongCode"
+                                        class="select_search"
+                                        id="depth5"
+                                        style="float:left; display:none;">
                                 </select>
                             </label>
                         </td>
