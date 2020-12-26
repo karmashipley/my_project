@@ -1,0 +1,45 @@
+## 실거래가 가져오기
+@app.route('/price', methods=['GET'])
+def get_items():
+    dongCode_receive = request.args.get('dongCode_give')
+    yymm_receive = request.args.get('yymm_give')
+    from_receive = request.args.get('from_give')
+    to_receive = request.args.get('to_give')
+
+    url = 'http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade?LAWD_CD='+dongCode_receive[0:5]+'&DEAL_YMD='+yymm_receive+'&serviceKey=CpiOdC5ys8I193uQraXgAjdPTK0cjePBKcxRATkQIFNdg%2BiFRetQcI0fSNyWFM7klpIw%2Bk9zSaB%2BuotTe9%2FZPQ%3D%3D'
+    res = requests.get(url)
+    root = ET.fromstring(res.content)
+    item_list = []
+    for child in root.find('body').find('items'):
+        elements = child.findall("*")
+        check = False
+        t_date = ''
+        price = ''
+        apt_name = ''
+        for element in elements:
+            tag = element.tag.strip()
+            text = element.text.strip()
+            if tag == '일':
+                t_date = text
+            if tag == '거래금액':
+                price = text
+	    if from_receive is not None and to_receive is not None:
+                    if int(from_receive) <= int(price.replace(',', '')) and int(to_receive) >= int(
+                            price.replace(',', '')):
+                        price_ckeck = True
+                    else:
+                        price_ckeck = False
+            if tag == '아파트':
+                apt_name = text
+            if tag == '전용면적':
+                square = text
+            if tag == '층':
+                floor = text
+            dong_name = db.addresses.find_one({'code':dongCode_receive})['dong']
+            if tag == '법정동' and text == dong_name:
+                check = True
+        if check and price_ckeck:
+            data = {'t_date': t_date, 'price': price, 'apt_name': apt_name, 'square': square, 'floor': floor}
+            item_list.append(data)
+    print(item_list)
+    return jsonify({'result': 'success', 'list': item_list})

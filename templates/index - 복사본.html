@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>아파트 실거래가 찾기</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <!--    &lt;!&ndash; JS &ndash;&gt;-->
+    <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"-->
+    <!--            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"-->
+    <!--            crossorigin="anonymous">-->
+    <!--    </script>-->
+
+    <style type="text/css">
+        .search {
+            text-align: center;
+        }
+
+        .wrap {
+            width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .wrap1 {
+            width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        h3 {
+            display: inline;
+            font-weight: bold;
+        }
+
+        .wrap-loading { /*화면 전체를 어둡게 합니다.*/
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2); /*not in ie */
+            filter: progid:DXImageTransform.Microsoft.Gradient(startColorstr='#20000000', endColorstr='#20000000'); /* ie */
+        }
+
+        .wrap-loading div { /*로딩 이미지*/
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-left: -21px;
+            margin-top: -21px;
+        }
+
+        .display-none { /*감추기*/
+            display: none;
+        }
+    </style>
+
+    <!--    <link rel="stylesheet" href="/css/common.css" type="text/css"/>-->
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            list_do()
+        });
+
+        // 광역시도 목록 선택
+        function list_do() {
+            $.ajax({
+                type: "GET",
+                url: "/do",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let addresses = response['addresses'];
+                        for (let i = 0; i < addresses.length; i++) {
+                            makeSido(addresses[i]["sido"], addresses[i]["code"]);
+                        }
+                    }
+                }
+            })
+        }
+
+        function makeSido(sido, code) {
+            let tempHtml = `<option value="${code}">${sido}</option>`;
+            $("#sido-list").append(tempHtml);
+        }
+
+        //시군구 목록 선택
+        function list_gugun() {
+            $("#gugun-list").empty();
+            $("#dong-list").empty();
+            let si_code = $("#sido-list option:selected").val();
+            $.ajax({
+                type: "GET",
+                url: "/gugun?sido_give=" + si_code,
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let addresses = response['addresses'];
+                        for (let i = 0; i < addresses.length; i++) {
+                            makeGugun(addresses[i]["gugun"], addresses[i]["code"]);
+                        }
+                    }
+                }
+            })
+        }
+
+        function makeGugun(gugun, code) {
+            let tempHtml = `<option value="${code}">${gugun}</option>`;
+            $("#gugun-list").append(tempHtml);
+        }
+
+        //읍면동 목록 선택
+        function list_dong() {
+            $("#dong-list").empty();
+            let gugun_code = $("#gugun-list option:selected").val();
+            $.ajax({
+                type: "GET",
+                url: "/dong?gugun_give=" + gugun_code,
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let addresses = response['addresses'];
+                        for (let i = 0; i < addresses.length; i++) {
+                            makeDong(addresses[i]["dong"], addresses[i]["code"]);
+                        }
+                    }
+                }
+            })
+        }
+
+        function makeDong(dong, code) {
+            let tempHtml = `<option value="${code}">${dong}</option>`;
+            $("#dong-list").append(tempHtml);
+        }
+
+        function search() {
+            $('#showResult').empty();
+            $('.wrap-loading').removeClass('display-none');
+            let dong = $("#dong-list").val();
+            let yymm = $('#year-list').val() + $('#month-list').val();
+            let from = $('#from').val();
+            let to = $('#to').val();
+
+            // if (from == "") {
+            //     alert ("찾고자 하는 아파트의 최저 금액을 입력해주세요")
+            //     $("#from").focus()
+            //     return false;
+            // } else if (to == "") {
+            //     alert ("찾고자 하는 아파트의 최대 금액을 입력해주세요")
+            //     $("#to").focus()
+            //     return false;
+            // }
+            $.ajax({
+                type: "GET",
+                // url: `/price?dongCode_give=${dong}&yymm_give=${yymm}`,
+                url: `/price?dongCode_give=${dong}&yymm_give=${yymm}&from_give=${from}&to_give=${to}`,
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let items = response['list']
+                        for (let i = 0; i < items.length; i++) {
+                            makeResultRow(items[i]["t_date"], items[i]["apt_name"], items[i]["square"], items[i]["floor"], items[i]["price"]);
+                        }
+                    }
+                    $('.wrap-loading').addClass('display-none');
+                }
+            })
+
+            function makeResultRow(t_date, apt_name, square, floor, price) {
+                let result_html = `<tr>\
+                               <td>${t_date}</td>
+                               <td>${apt_name}</td>
+                               <td>${square}</td>
+                               <td>${floor}</td>
+                               <td>${price}</td>
+                               </tr>`;
+                $('#showResult').append(result_html);
+            }
+        }
+    </script>
+</head>
+
+<body>
+<div class="wrap" style="outline:black solid 1px">
+    <div class="wrap-loading display-none">
+        <div><img src="{{ url_for('static', filename='loading.gif') }}"/></div>
+    </div>
+    <center><h3>아파트 검색 기초 정보</h3></center>
+    <p></p>
+    <table style="width: 100%;">
+        <tr>
+            <td class="search_tit01">조회년월</td>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            <label>
+                                <select name="srhYear" class="select_search" id="year-list">
+                                    <option value="">::거래년도::</option>
+                                    <option value="2016">2016년</option>
+                                    <option value="2017">2017년</option>
+                                    <option value="2018">2018년</option>
+                                    <option value="2019">2019년</option>
+                                    <option value="2020">2020년</option>
+                                </select>
+                            </label>
+                        </td>
+                        <td style="padding-left: 3px;">
+                            <label>
+                                <select name="srhPeriod" class="select_search" id="month-list">
+                                    <option value="">::거래월::</option>
+                                    <option value="01">1월</option>
+                                    <option value="02">2월</option>
+                                    <option value="03">3월</option>
+                                    <option value="04">4월</option>
+                                    <option value="05">5월</option>
+                                    <option value="06">6월</option>
+                                    <option value="07">7월</option>
+                                    <option value="08">8월</option>
+                                    <option value="09">9월</option>
+                                    <option value="10">10월</option>
+                                    <option value="11">11월</option>
+                                    <option value="12">12월</option>
+                                </select>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="search_tit01">지역</td>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            <label>
+                                <select name="Code"
+                                        class="select_search"
+                                        id="sido-list"
+                                        style="float:left;" onchange="list_gugun()">
+                                    <option value="">::광역시도 선택::</option>
+                                    <!--  <option value="11">서울특별시</option>-->
+                                </select>
+                            </label>
+                        </td>
+                        <td style="padding-left: 3px;">
+                            <label>
+                                <select name="gugunCode"
+                                        class="select_search"
+                                        id="gugun-list"
+                                        style="float:left;" onchange="list_dong()">
+                                    <option value="">::시구군선택::</option>
+                                    <!-- <option value="11680">강남구</option>-->
+                                </select>
+                            </label>
+                        </td>
+                        <td style="padding-left: 3px;">
+                            <label>
+                                <select name="dongCode"
+                                        class="select_search"
+                                        id="dong-list"
+                                        style="float:left;">
+                                    <option value="">::읍면동선택::</option>
+                                    <!-- <option value="1168010300">개포동</option>-->
+                                </select>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+                <tr id="divAmt">
+                    <td class="search_tit01">금액</td>
+                    <td>
+                        <table id="divTradeAmt">
+                            <tr>
+                                <td>
+                                    <label><input type="text" name="fromAmt1" id="from"
+                                                  class="input_search_R" size='10'
+                                                  maxlength="9" value="" /> (만원 이상)</label>
+                                    ~
+                                    <label><input type="text" name="toAmt1" id="to"
+                                                  class="input_search_R" size='10'
+                                                  maxlength="9" value="" /> (만원 이하)</label>
+                                    <span id="textAmt1"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+    </table>
+    <p>
+    <div class="search">
+        <button onclick="search()" type="button" class="btn btn-warning btn-lg">조회하기</button>
+    </div>
+</div>
+
+<div class="wrap1" style="outline:black solid 1px">
+    <div class="result">
+        <center><h3>당신이 찾는 아파트는 여기에</h3></center>
+        <p></p>
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">거래일</th>
+                <th scope="col">아파트명</th>
+                <th scope="col">면적(제곱미터)</th>
+                <th scope="col">층</th>
+                <th scope="col">실거래가(만원)</th>
+            </tr>
+            </thead>
+            <tbody id="showResult">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
