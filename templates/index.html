@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>아파트 실거래가 찾기</title>
+    <title>실거래 가격으로 아파트 찾기</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -14,6 +14,9 @@
     <!--            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"-->
     <!--            crossorigin="anonymous">-->
     <!--    </script>-->
+    <meta property="og:title" content="실거래 가격으로 아파트 찾기" />
+    <meta property="og:description" content="준비된 예산 범위에 맞는 아파트를 국토교통부 실거래 가격에 맞춰 찾아보세요" />
+    <meta property="og:image" content="{{ url_for('static', filename='ogimage.gif') }}" />
 
     <style type="text/css">
         .search {
@@ -152,15 +155,6 @@
             let from = $('#from').val();
             let to = $('#to').val();
 
-            // if (from == "") {
-            //     alert ("찾고자 하는 아파트의 최저 금액을 입력해주세요")
-            //     $("#from").focus()
-            //     return false;
-            // } else if (to == "") {
-            //     alert ("찾고자 하는 아파트의 최대 금액을 입력해주세요")
-            //     $("#to").focus()
-            //     return false;
-            // }
             $.ajax({
                 type: "GET",
                 // url: `/price?dongCode_give=${dong}&yymm_give=${yymm}`,

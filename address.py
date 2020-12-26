@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-client = MongoClient('localhost', 27017)
+# client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://test:test@54.180.128.171',27017)
 db = client.dbsparta
 
 # 파일을 읽어서 데이터 베이스에 저장
